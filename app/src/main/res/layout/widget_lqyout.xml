@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minHeight="72dip"
+    android:minWidth="144dip"
+    android:background="@drawable/city_bg">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/llImage"
+            android:src="@drawable/icon"
+            android:layout_gravity="left"
+            android:paddingTop="6dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingBottom="7dp"
+            android:id="@+id/llText">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="31sp"
+                android:id="@+id/Temp"
+                android:layout_gravity="left"
+                android:textSize="28sp"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/deltaTemp"
+                android:textColor="#557777"
+                android:textSize="12sp"
+                android:layout_gravity="left" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llUpdate"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/city_plate">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Updated"
+            android:layout_gravity="center"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="#666666"
+            android:textSize="10sp"
+            android:text="@string/loading" />
+    </LinearLayout>
+</LinearLayout>

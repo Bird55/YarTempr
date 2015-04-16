@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">YarTemp.com</string>
+    <string name="app_name_small">YarTempcom</string>
+    <string name="widget_name">YarTemp</string>
+
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <string name="degrees_unit">Units of measurement</string>
+    <string name="degree_celsius">Celsius</string>
+    <string name="degree_fahrenheit">Fahrenheit</string>
+    <string name="time_period_text">The update interval</string>
+
+    <string name="thermometer_image_description">Thermometer image</string>
+    <string name="watch_image_description">Watch image</string>
+
+    <string name="network_error">No network connection</string>
+
+    <string name="config_title">Settings</string>
+    <string name="degree_unit_conf">Temperature units</string>
+    <string name="time_update_conf">Refresh time</string>
+
+    <string-array name="refresh_time_text">
+        <item>30 sec</item>
+        <item>1 min</item>
+        <item>2 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>30 min</item>
+        <item>1 hour</item>
+    </string-array>
+
+    <string-array name="refresh_time_value">
+        <item>30000</item>
+        <item>60000</item>
+        <item>120000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
+
+    <string name="degrees_celsius">°C</string>
+    <string name="degrees_fahrenheit">°F</string>
+    <string name="degree_speed">per hour</string>
+    <string name="time_text">Updated at</string>
+    <string name="temp_URL">http://yartemp.com</string>
+    <string name="cap_description">YarTemp site emblem</string>
+
+    <string name="loading">loading&#8230;</string>
+</resources>
+    <!-- string name="title_activity_unit">UnitActivity</string -->
+    <!-- string name="title_activity_refresh">RefreshActivity</string -->
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <!-- string name="hello_blank_fragment">Hello blank fragment</string -->

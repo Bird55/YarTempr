@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">YarTemp.com</string>
+    <string name="app_name_small">YarTemp.com</string>
+    <string name="widget_name">YarTemp</string>
+
+    <string name="btn_ok">Да</string>
+    <string name="btn_cancel">Нет</string>
+
+    <string name="degrees_unit">Единицы измерения</string>
+    <string name="degree_celsius">Градусы Цельсия</string>
+    <string name="degree_fahrenheit">Градусы Фарингейта</string>
+    <string name="time_period_text">Периодичность обновления</string>
+
+    <string name="thermometer_image_description">Изображение термотетра</string>
+    <string name="watch_image_description">Изображение часов</string>
+
+    <string name="network_error">Нет подключения к сети</string>
+
+    <string name="config_title">Настройка параметров</string>
+    <string name="degree_unit_conf">Единицы измерения температуры</string>
+    <string name="time_update_conf">Период обновления</string>
+
+    <string-array name="refresh_time_text">
+        <item>30 сек</item>
+        <item>1 мин</item>
+        <item>2 мин</item>
+        <item>5 мин</item>
+        <item>10 мин</item>
+        <item>30 мшт</item>
+        <item>1 час</item>
+    </string-array>
+
+    <string-array name="refresh_time_value">
+        <item>30000</item>
+        <item>60000</item>
+        <item>120000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
+
+    <string name="degrees_celsius">°C</string>
+    <string name="degrees_fahrenheit">°F</string>
+    <string name="degree_speed">в час</string>
+    <string name="time_text">Обновлено в</string>
+    <string name="temp_URL">http://yartemp.com</string>
+    <string name="cap_description">Эмблема сайта YarTemp</string>
+
+    <string name="loading">загрузка&#8230;</string>
+</resources>
+    <!-- string name="title_activity_unit">UnitActivity</string -->
+    <!-- string name="title_activity_refresh">RefreshActivity</string -->
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <!-- string name="hello_blank_fragment">Hello blank fragment</string -->
