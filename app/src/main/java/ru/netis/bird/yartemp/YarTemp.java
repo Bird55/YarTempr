@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -29,7 +30,6 @@ import java.util.Calendar;
 public class YarTemp extends AppWidgetProvider {
 
     final static String ACTION_UPDATE = "ru.netis.bird.yartrmp.update";
-    final static String ACTION_GOSITE = "ru.netis.bird.yartrmp.goSite";
 
     public static final int CELSIUS = 0;
     public static final int FAHRENHEIT = 1;
@@ -62,7 +62,7 @@ public class YarTemp extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
 
         Log.d(LOG_TAG, "YarTemp onReceive");
@@ -117,7 +117,7 @@ public class YarTemp extends AppWidgetProvider {
         PendingIntent pIntent;
         Log.d(LOG_TAG, "YarTemp updateWidget [" + widgetID + "]");
 
-        RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget_lqyout);
+        RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
 // текст "uploading..."
         widgetView.setTextViewText(R.id.Updated, context.getString(R.string.loading));
@@ -262,13 +262,12 @@ public class YarTemp extends AppWidgetProvider {
         protected void onPostExecute(String s[]) {
             super.onPostExecute(s);
 
-            RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget_lqyout);
+            RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             widgetView.setTextViewText(R.id.Temp,s[0]);
             widgetView.setTextViewText(R.id.deltaTemp,s[1]);
             widgetView.setTextViewText(R.id.Updated, s[2]);
 
             am.updateAppWidget(widgetID, widgetView);
-
         }
     }
 

@@ -78,23 +78,6 @@ public class ConfigActivity extends Activity {
         super.onDestroy();
         if (DEBUG) Log.d(LOG_TAG, "ConfigActivity onDestroy [" + widgetID + "]");
 
-/*
-        String str = sp.getString(ConfigActivity.YARTEMP_PERIOD + widgetID, null);
-        if (DEBUG) Log.d(LOG_TAG, "1");
-        if (!resultPeriod && str == null) {
-            if (DEBUG) Log.d(LOG_TAG, "2");
-            setSharedPreferences(YarTemp.DEFAULT_PERIOD);
-        }
-        if (DEBUG) Log.d(LOG_TAG, "3");
-        int i = sp.getInt(ConfigActivity.YARTEMP_PERIOD + widgetID, -1);
-        if (DEBUG) Log.d(LOG_TAG, "4");
-        if (!resultUnit  && i == -1) {
-            if (DEBUG) Log.d(LOG_TAG, "5");
-            setSharedPreferences(YarTemp.DEFAULT_UNIT);
-        }
-        if (DEBUG) Log.d(LOG_TAG, "6");
-*/
-
         YarTemp.updateWidget(context, am, sp, widgetID);
     }
 
@@ -109,7 +92,6 @@ public class ConfigActivity extends Activity {
 
         Dialog dialog = onCreateUnitDialog();
         dialog.show();
-//        onPause();
     }
 
     public void onClickRefresh(View v) {
