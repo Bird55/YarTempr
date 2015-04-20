@@ -105,7 +105,7 @@ public class ConfigActivity extends Activity {
     public void setSharedPreferences(int unit) {
         if ((DEBUG)) Log.d(LOG_TAG, "ConfigActivity setSharedPreferences [" + widgetID + "] " +
                 "Записываем в Preferences единицы измерения = "
-                + (unit == YarTemp.CELSIUS ? context.getString(R.string.degree_celsius) : context.getString(R.string.degree_fahrenheit)));
+                + (unit == Constans.CELSIUS ? context.getString(R.string.degree_celsius) : context.getString(R.string.degree_fahrenheit)));
         // Записываем значения с экрана в Preferences
         Editor editor = sp.edit();
         editor.putInt(YARTEMP_DEGREES + widgetID, unit);
@@ -133,7 +133,7 @@ public class ConfigActivity extends Activity {
 
         final SharedPreferences sp = getSharedPreferences(ConfigActivity.YARTEMP_PREF, MODE_PRIVATE);
 
-        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, YarTemp.CELSIUS);
+        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, Constans.CELSIUS);
         // Set the dialog title
         builder.setTitle(context.getString(R.string.degree_unit_conf))
                 .setCancelable(false)

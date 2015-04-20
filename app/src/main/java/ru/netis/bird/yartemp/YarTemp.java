@@ -29,30 +29,17 @@ import java.util.Calendar;
  */
 public class YarTemp extends AppWidgetProvider {
 
-    final static String ACTION_UPDATE = "ru.netis.bird.yartrmp.update";
-
-    public static final int CELSIUS = 0;
-    public static final int FAHRENHEIT = 1;
-    public static final int DEFAULT_PERIOD = 120000;
-    public static final int DEFAULT_UNIT = CELSIUS;
-
-    final static String LOG_TAG = "myLogs";
-    final static boolean DEBUG = true;
-
-    static int degreeUnit;
-    static int periodUpdate;
-
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
-        if (DEBUG) Log.d(LOG_TAG, "YarTemp onEnabled");
+        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onEnabled");
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        if (DEBUG) Log.d(LOG_TAG, "YarTemp onUpdate " + Arrays.toString(appWidgetIds));
+        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onUpdate " + Arrays.toString(appWidgetIds));
 
         SharedPreferences sp = context.getSharedPreferences(
                 ConfigActivity.YARTEMP_PREF, Context.MODE_PRIVATE);
@@ -65,27 +52,27 @@ public class YarTemp extends AppWidgetProvider {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
 
-        Log.d(LOG_TAG, "YarTemp onReceive");
+        Log.d(Constans.LOG_TAG, "YarTemp onReceive");
 
         // Извлекаем ID экземпляра
         int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
         Bundle extras = intent.getExtras();
-        Log.d(LOG_TAG, "YarTemp onReceive");
+        Log.d(Constans.LOG_TAG, "YarTemp onReceive");
         if (extras != null) {
             mAppWidgetId = extras.getInt(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        Log.d(LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "]");
+        Log.d(Constans.LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "]");
         if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
             // Читаем значения
             SharedPreferences sp = context.getSharedPreferences(
                     ConfigActivity.YARTEMP_PREF, Context.MODE_PRIVATE);
 
             // Проверяем, что это intent от нажатия на третью зону
-            if (intent.getAction().equalsIgnoreCase(ACTION_UPDATE)) {
-                Log.d(LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "] ACTION_UPDATE");
+            if (intent.getAction().equalsIgnoreCase(Constans.ACTION_UPDATE)) {
+                Log.d(Constans.LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "] ACTION_UPDATE");
                 updateWidget(context, AppWidgetManager.getInstance(context), sp, mAppWidgetId);
             }
         }
@@ -94,7 +81,7 @@ public class YarTemp extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-        if (DEBUG) Log.d(LOG_TAG, "YarTemp onDeleted " + Arrays.toString(appWidgetIds));
+        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onDeleted " + Arrays.toString(appWidgetIds));
 
         // Удаляем Preferences
         Editor editor = context.getSharedPreferences(
@@ -109,13 +96,17 @@ public class YarTemp extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
-        if (DEBUG) Log.d(LOG_TAG, "YarTemp onDisabled");
+        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onDisabled");
     }
 
     static void updateWidget(Context context, AppWidgetManager appWidgetManager,
                               SharedPreferences sp, int widgetID) {
+
+        int degreeUnit;
+        int periodUpdate;
         PendingIntent pIntent;
-        Log.d(LOG_TAG, "YarTemp updateWidget [" + widgetID + "]");
+
+        Log.d(Constans.LOG_TAG, "YarTemp updateWidget [" + widgetID + "]");
 
         RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
@@ -123,7 +114,7 @@ public class YarTemp extends AppWidgetProvider {
         widgetView.setTextViewText(R.id.Updated, context.getString(R.string.loading));
 
         // Site yartemp.com (певая зона)
-        Uri uri = Uri.parse("http://yartemp.com");
+        Uri uri = Uri.parse(context.getString(R.string.temp_URL));
         Intent siteIntent = new Intent(Intent.ACTION_VIEW, uri);
         pIntent = PendingIntent.getActivity(context, widgetID, siteIntent, 0);
         widgetView.setOnClickPendingIntent(R.id.llImage, pIntent);
@@ -148,10 +139,10 @@ public class YarTemp extends AppWidgetProvider {
         String periodSt = sp.getString(ConfigActivity.YARTEMP_PERIOD + widgetID, null);
         degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, -1);
 
-        periodUpdate = Integer.getInteger(periodSt, DEFAULT_PERIOD);
-        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, DEFAULT_UNIT);
+        periodUpdate = Integer.getInteger(periodSt, Constans.DEFAULT_PERIOD);
+        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, Constans.DEFAULT_UNIT);
 
-        if (DEBUG) Log.d(LOG_TAG, "YarTemp updateWidget [" + widgetID + "] degree unit = " + degreeUnit + " period update = " + periodUpdate);
+        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp updateWidget [" + widgetID + "] degree unit = " + degreeUnit + " period update = " + periodUpdate);
 
         // Проверяем подключение к сети
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -162,6 +153,7 @@ public class YarTemp extends AppWidgetProvider {
             parseURL.setContext(context);
             parseURL.setAm(appWidgetManager);
             parseURL.setWidgetID(widgetID);
+            parseURL.setDgreeUnit(degreeUnit);
             parseURL.execute(context.getString(R.string.temp_URL));
         } else {
 
@@ -187,28 +179,31 @@ public class YarTemp extends AppWidgetProvider {
 
         String currTime;
 
+        int degreeUnit;
+
         void setContext(Context context) {this.context = context;}
         void setAm(AppWidgetManager am) {this.am = am;}
         void setWidgetID(int widgetID) {this.widgetID = widgetID;}
+        void setDgreeUnit(int degreeUnit) {this.degreeUnit = degreeUnit;}
 
         @Override
         protected String[] doInBackground(String... strings) {
             String[] a = new String[]{"","",""};
 
             try {
-                if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground Connecting to [" + strings[0] + "]");
+                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground Connecting to [" + strings[0] + "]");
                 Document doc = Jsoup.connect(strings[0]).get();
-                Log.d(LOG_TAG, "YarTemp doInBackground Connected to [" + strings[0] + "]");
+                Log.d(Constans.LOG_TAG, "YarTemp doInBackground Connected to [" + strings[0] + "]");
 
                 try {
                     spTemp1 = doc.getElementById("spTemp1");
                     spTemp1a = doc.getElementById("spTemp1a");
                     currentTempStr = spTemp1.text() + spTemp1a.text();
                     currentTempFl = Float.valueOf(currentTempStr);
-                    if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground currentTemp = " + currentTempFl);
+                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground currentTemp = " + currentTempFl);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground [" + widgetID + "] currentTemp - ERROR");
+                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] currentTemp - ERROR");
                 }
 
                 try {
@@ -216,15 +211,15 @@ public class YarTemp extends AppWidgetProvider {
                     spTemp2a = doc.getElementById("spTemp2a");
                     deltaTempStr = spTemp2.text() + spTemp2a.text();
                     deltaTempFl = Float.valueOf(deltaTempStr);
-                    if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp = " + deltaTempFl);
+                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp = " + deltaTempFl);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp - ERROR");
+                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp - ERROR");
                 }
 
-                if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground [" + widgetID + "] degreeUnit = " + degreeUnit);
+                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] degreeUnit = " + degreeUnit);
                 deltaTempStr = context.getString(R.string.degree_speed); // "в час"
-                if (degreeUnit == FAHRENHEIT) {
+                if (degreeUnit == Constans.FAHRENHEIT) {
                     // Переводим °C в °F
                     currentTempStr = context.getString(R.string.degrees_fahrenheit); // " °F"
                     float sing = deltaTempFl > 0f ? 1f : -1f;
@@ -236,16 +231,16 @@ public class YarTemp extends AppWidgetProvider {
                     currentTempStr = context.getString(R.string.degrees_celsius); // " °C"
                     a[0] = String.format("%2.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
                     a[1] = String.format("%+1.0f %s %s", RoundSing(deltaTempFl, 2), currentTempStr, deltaTempStr);
-                    if (DEBUG) Log.d(LOG_TAG, Float.toString(RoundSing(deltaTempFl, 2)));
+                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, Float.toString(RoundSing(deltaTempFl, 2)));
                 }
                 currTime = getCurrentTime();
                 a[2] = context.getString(R.string.time_text) + " " + currTime; // "Обновлено в " + currTime
 
-                if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground [" +widgetID + "]  " + a[0] + " | " + a[1] + " | " +a[2]);
+                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" +widgetID + "]  " + a[0] + " | " + a[1] + " | " +a[2]);
 
             } catch (Throwable t) {
                 t.printStackTrace();
-                if (DEBUG) Log.d(LOG_TAG, "YarTemp doInBackground [" +widgetID + "] network ERROR");
+                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" +widgetID + "] network ERROR");
             }
 
             return a;
