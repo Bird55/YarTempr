@@ -156,11 +156,11 @@ public class UpdateWidget {
                 float sing = deltaTempFl > 0f ? 1f : -1f;
                 currentTempFl = currentTempFl * 5.0f / 9.0f + 32.0f;
                 deltaTempFl = sing * (deltaTempFl * 5.0f / 9.0f);   // + 32.0f);
-                a[0] = String.format("%3.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
+                a[0] = String.format("%+3.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
                 a[1] = String.format("%+2.0f %s %s", RoundSing(deltaTempFl, 2), currentTempStr, deltaTempStr);
             } else {
                 currentTempStr = context.getString(R.string.degrees_celsius); // " °C"
-                a[0] = String.format("%2.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
+                a[0] = String.format("%+2.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
                 a[1] = String.format("%+1.0f %s %s", RoundSing(deltaTempFl, 2), currentTempStr, deltaTempStr);
                 if (Constants.DEBUG)
                     Log.d(Constants.LOG_TAG, Float.toString(RoundSing(deltaTempFl, 2)));
