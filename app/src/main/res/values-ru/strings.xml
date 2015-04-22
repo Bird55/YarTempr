@@ -44,7 +44,8 @@
     <string name="degrees_fahrenheit">°F</string>
     <string name="degree_speed">в час</string>
     <string name="time_text">Обновлено в</string>
-    <string name="temp_URL">http://yartemp.com</string>
+    <string name="temp_site_URL">http://yartemp.com</string>
+    <string name="temp_data_URL">http://yartemp.com/webdata/</string>
     <string name="cap_description">Эмблема сайта YarTemp</string>
 
     <string name="loading">загрузка&#8230;</string>

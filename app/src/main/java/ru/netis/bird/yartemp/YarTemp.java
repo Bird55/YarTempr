@@ -113,7 +113,7 @@ public class YarTemp extends AppWidgetProvider {
         widgetView.setTextViewText(R.id.Updated, context.getString(R.string.loading));
 
         // Site yartemp.com (певая зона)
-        Uri uri = Uri.parse(context.getString(R.string.temp_URL));
+        Uri uri = Uri.parse(context.getString(R.string.temp_site_URL));
         Intent siteIntent = new Intent(Intent.ACTION_VIEW, uri);
         pIntent = PendingIntent.getActivity(context, widgetID, siteIntent, 0);
         widgetView.setOnClickPendingIntent(R.id.llImage, pIntent);
@@ -151,7 +151,7 @@ public class YarTemp extends AppWidgetProvider {
             parseURL.setAm(appWidgetManager);
             parseURL.setWidgetID(widgetID);
             parseURL.setDegreeUnit(degreeUnit);
-            parseURL.execute(context.getString(R.string.temp_URL));
+            parseURL.execute(context.getString(R.string.temp_data_URL));
         } else {
 
             Toast.makeText(context, context.getString(R.string.network_error), Toast.LENGTH_SHORT).show();
