@@ -78,7 +78,7 @@ public class ConfigActivity extends Activity {
         super.onDestroy();
         if (DEBUG) Log.d(LOG_TAG, "ConfigActivity onDestroy [" + widgetID + "]");
 
-        YarTemp.updateWidget(context, am, sp, widgetID);
+        UpdateWidget updateWidget = new UpdateWidget(context, am, sp, widgetID);
     }
 
     @Override
