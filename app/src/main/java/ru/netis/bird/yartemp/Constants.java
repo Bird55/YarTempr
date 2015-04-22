@@ -3,7 +3,7 @@ package ru.netis.bird.yartemp;
 /**
  * Created by Алексей on 20.04.2015
  */
-public class Constans {
+public class Constants {
     public static final int CELSIUS = 0;
     public static final int DEFAULT_UNIT = CELSIUS;
     public static final int FAHRENHEIT = 1;

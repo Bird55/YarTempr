@@ -44,7 +44,7 @@
     <string name="degrees_fahrenheit">°F</string>
     <string name="degree_speed">per hour</string>
     <string name="time_text">Updated at</string>
-    <string name="temp_URL">http://yartemp.com</string>
+    <string name="temp_URL">http://yartemp.com/webdata/</string>
     <string name="cap_description">YarTemp site emblem</string>
 
     <string name="loading">loading&#8230;</string>

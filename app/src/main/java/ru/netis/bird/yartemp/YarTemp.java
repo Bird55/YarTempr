@@ -17,10 +17,9 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -32,14 +31,14 @@ public class YarTemp extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
-        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onEnabled");
+        if (Constants.DEBUG) Log.d(Constants.LOG_TAG, "YarTemp onEnabled");
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onUpdate " + Arrays.toString(appWidgetIds));
+        if (Constants.DEBUG) Log.d(Constants.LOG_TAG, "YarTemp onUpdate " + Arrays.toString(appWidgetIds));
 
         SharedPreferences sp = context.getSharedPreferences(
                 ConfigActivity.YARTEMP_PREF, Context.MODE_PRIVATE);
@@ -52,27 +51,27 @@ public class YarTemp extends AppWidgetProvider {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
 
-        Log.d(Constans.LOG_TAG, "YarTemp onReceive");
+        Log.d(Constants.LOG_TAG, "YarTemp onReceive");
 
         // Извлекаем ID экземпляра
         int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
         Bundle extras = intent.getExtras();
-        Log.d(Constans.LOG_TAG, "YarTemp onReceive");
+        Log.d(Constants.LOG_TAG, "YarTemp onReceive");
         if (extras != null) {
             mAppWidgetId = extras.getInt(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        Log.d(Constans.LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "]");
+        Log.d(Constants.LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "]");
         if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
             // Читаем значения
             SharedPreferences sp = context.getSharedPreferences(
                     ConfigActivity.YARTEMP_PREF, Context.MODE_PRIVATE);
 
             // Проверяем, что это intent от нажатия на третью зону
-            if (intent.getAction().equalsIgnoreCase(Constans.ACTION_UPDATE)) {
-                Log.d(Constans.LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "] ACTION_UPDATE");
+            if (intent.getAction().equalsIgnoreCase(Constants.ACTION_UPDATE)) {
+                Log.d(Constants.LOG_TAG, "YarTemp onReceive [" + mAppWidgetId + "] ACTION_UPDATE");
                 updateWidget(context, AppWidgetManager.getInstance(context), sp, mAppWidgetId);
             }
         }
@@ -81,7 +80,7 @@ public class YarTemp extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onDeleted " + Arrays.toString(appWidgetIds));
+        if (Constants.DEBUG) Log.d(Constants.LOG_TAG, "YarTemp onDeleted " + Arrays.toString(appWidgetIds));
 
         // Удаляем Preferences
         Editor editor = context.getSharedPreferences(
@@ -96,7 +95,7 @@ public class YarTemp extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
-        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp onDisabled");
+        if (Constants.DEBUG) Log.d(Constants.LOG_TAG, "YarTemp onDisabled");
     }
 
     static void updateWidget(Context context, AppWidgetManager appWidgetManager,
@@ -106,7 +105,7 @@ public class YarTemp extends AppWidgetProvider {
         int periodUpdate;
         PendingIntent pIntent;
 
-        Log.d(Constans.LOG_TAG, "YarTemp updateWidget [" + widgetID + "]");
+        Log.d(Constants.LOG_TAG, "YarTemp updateWidget [" + widgetID + "]");
 
         RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
@@ -137,12 +136,10 @@ public class YarTemp extends AppWidgetProvider {
 
         // Читаем параметры Preferences
         String periodSt = sp.getString(ConfigActivity.YARTEMP_PERIOD + widgetID, null);
-        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, -1);
+        periodUpdate = Integer.getInteger(periodSt, Constants.DEFAULT_PERIOD);
+        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, Constants.DEFAULT_UNIT);
 
-        periodUpdate = Integer.getInteger(periodSt, Constans.DEFAULT_PERIOD);
-        degreeUnit = sp.getInt(ConfigActivity.YARTEMP_DEGREES + widgetID, Constans.DEFAULT_UNIT);
-
-        if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp updateWidget [" + widgetID + "] degree unit = " + degreeUnit + " period update = " + periodUpdate);
+        if (Constants.DEBUG) Log.d(Constants.LOG_TAG, "YarTemp updateWidget [" + widgetID + "] degree unit = " + degreeUnit + " period update = " + periodUpdate);
 
         // Проверяем подключение к сети
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -153,7 +150,7 @@ public class YarTemp extends AppWidgetProvider {
             parseURL.setContext(context);
             parseURL.setAm(appWidgetManager);
             parseURL.setWidgetID(widgetID);
-            parseURL.setDgreeUnit(degreeUnit);
+            parseURL.setDegreeUnit(degreeUnit);
             parseURL.execute(context.getString(R.string.temp_URL));
         } else {
 
@@ -167,84 +164,83 @@ public class YarTemp extends AppWidgetProvider {
         AppWidgetManager am;
         int widgetID;
 
-        Element spTemp1;
-        Element spTemp1a;
         String currentTempStr;
         float currentTempFl;
 
-        Element spTemp2;
-        Element spTemp2a;
         String deltaTempStr;
         float deltaTempFl;
 
         String currTime;
-
         int degreeUnit;
 
         void setContext(Context context) {this.context = context;}
         void setAm(AppWidgetManager am) {this.am = am;}
         void setWidgetID(int widgetID) {this.widgetID = widgetID;}
-        void setDgreeUnit(int degreeUnit) {this.degreeUnit = degreeUnit;}
+        void setDegreeUnit(int degreeUnit) {this.degreeUnit = degreeUnit;}
 
         @Override
         protected String[] doInBackground(String... strings) {
-            String[] a = new String[]{"","",""};
-
+            String[] a = new String[]{"", "", ""};
+            BufferedReader reader = null;
+            StringBuilder buffer = new StringBuilder();
+            if (Constants.DEBUG)
+                Log.d(Constants.LOG_TAG, "YarTemp doInBackground Connecting to [" + strings[0] + "]");
             try {
-                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground Connecting to [" + strings[0] + "]");
-                Document doc = Jsoup.connect(strings[0]).get();
-                Log.d(Constans.LOG_TAG, "YarTemp doInBackground Connected to [" + strings[0] + "]");
-
+                URL site = new URL(strings[0]);
+                reader = new BufferedReader(new InputStreamReader(site.openStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                reader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
                 try {
-                    spTemp1 = doc.getElementById("spTemp1");
-                    spTemp1a = doc.getElementById("spTemp1a");
-                    currentTempStr = spTemp1.text() + spTemp1a.text();
-                    currentTempFl = Float.valueOf(currentTempStr);
-                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground currentTemp = " + currentTempFl);
+                    assert reader != null;
+                    reader.close();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] currentTemp - ERROR");
                 }
-
-                try {
-                    spTemp2 = doc.getElementById("spTemp2");
-                    spTemp2a = doc.getElementById("spTemp2a");
-                    deltaTempStr = spTemp2.text() + spTemp2a.text();
-                    deltaTempFl = Float.valueOf(deltaTempStr);
-                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp = " + deltaTempFl);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp - ERROR");
-                }
-
-                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] degreeUnit = " + degreeUnit);
-                deltaTempStr = context.getString(R.string.degree_speed); // "в час"
-                if (degreeUnit == Constans.FAHRENHEIT) {
-                    // Переводим °C в °F
-                    currentTempStr = context.getString(R.string.degrees_fahrenheit); // " °F"
-                    float sing = deltaTempFl > 0f ? 1f : -1f;
-                    currentTempFl = currentTempFl*5.0f/9.0f + 32.0f;
-                    deltaTempFl = sing * (deltaTempFl*5.0f/9.0f);   // + 32.0f);
-                    a[0] = String.format("%3.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
-                    a[1] = String.format("%+2.0f %s %s", RoundSing(deltaTempFl,2), currentTempStr, deltaTempStr);
-                } else {
-                    currentTempStr = context.getString(R.string.degrees_celsius); // " °C"
-                    a[0] = String.format("%2.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
-                    a[1] = String.format("%+1.0f %s %s", RoundSing(deltaTempFl, 2), currentTempStr, deltaTempStr);
-                    if (Constans.DEBUG) Log.d(Constans.LOG_TAG, Float.toString(RoundSing(deltaTempFl, 2)));
-                }
-                currTime = getCurrentTime();
-                a[2] = context.getString(R.string.time_text) + " " + currTime; // "Обновлено в " + currTime
-
-                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" +widgetID + "]  " + a[0] + " | " + a[1] + " | " +a[2]);
-
-            } catch (Throwable t) {
-                t.printStackTrace();
-                if (Constans.DEBUG) Log.d(Constans.LOG_TAG, "YarTemp doInBackground [" +widgetID + "] network ERROR");
             }
+
+            String[] fields = buffer.toString().split(";");
+
+            currentTempFl = Float.valueOf(fields[0]);
+            if (Constants.DEBUG)
+                Log.d(Constants.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] currentTemp = " + currentTempFl);
+            deltaTempFl = Float.valueOf(fields[2]);
+            if (Constants.DEBUG)
+                Log.d(Constants.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] deltaTemp = " + deltaTempFl);
+
+            if (Constants.DEBUG)
+                Log.d(Constants.LOG_TAG, "YarTemp doInBackground [" + widgetID + "] degreeUnit = " + degreeUnit);
+            deltaTempStr = context.getString(R.string.degree_speed); // "в час"
+            if (degreeUnit == Constants.FAHRENHEIT) {
+                // Переводим °C в °F
+                currentTempStr = context.getString(R.string.degrees_fahrenheit); // " °F"
+                float sing = deltaTempFl > 0f ? 1f : -1f;
+                currentTempFl = currentTempFl * 5.0f / 9.0f + 32.0f;
+                deltaTempFl = sing * (deltaTempFl * 5.0f / 9.0f);   // + 32.0f);
+                a[0] = String.format("%3.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
+                a[1] = String.format("%+2.0f %s %s", RoundSing(deltaTempFl, 2), currentTempStr, deltaTempStr);
+            } else {
+                currentTempStr = context.getString(R.string.degrees_celsius); // " °C"
+                a[0] = String.format("%2.0f %s", RoundSing(currentTempFl, 3), currentTempStr);
+                a[1] = String.format("%+1.0f %s %s", RoundSing(deltaTempFl, 2), currentTempStr, deltaTempStr);
+                if (Constants.DEBUG)
+                    Log.d(Constants.LOG_TAG, Float.toString(RoundSing(deltaTempFl, 2)));
+            }
+
+            currTime = getCurrentTime();
+            a[2] = context.getString(R.string.time_text) + " " + currTime; // "Обновлено в " + currTime
+
+            if (Constants.DEBUG)
+                Log.d(Constants.LOG_TAG, "YarTemp doInBackground [" + widgetID + "]  " + a[0] + " | " + a[1] + " | " + a[2]);
 
             return a;
         }
+
 
         private String getCurrentTime() {
             Calendar calendar = Calendar.getInstance();
